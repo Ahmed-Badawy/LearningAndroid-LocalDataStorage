@@ -62,6 +62,7 @@ public class DBDataSource {
         Cursor cursor = database.query(DBOpenHelper.TABLE_NAME, DBOpenHelper.COLS_STRING_ARRAY, null, null, null, null, null);
         Log.d(Logtag,"Retured "+cursor.getCount()+" Rows");
         if(cursor.getCount()>0){
+            persons_list = new ArrayList<>();
             populate_person_list(cursor);
         }
         return persons_list;
@@ -77,6 +78,11 @@ public class DBDataSource {
         return persons_list;
     }
 
+    public boolean remove(long id){
+        String where_str = DBOpenHelper.COL1+" = "+id;
+        int result = database.delete(DBOpenHelper.TABLE_NAME,where_str,null);//return 1 on success
+        return (result == 1);
+    }
 
 
     private ArrayList<person_model> populate_person_list( Cursor cursor) {

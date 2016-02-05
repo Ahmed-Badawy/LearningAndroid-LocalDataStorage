@@ -39,8 +39,10 @@ public class sqliteStorageActivity extends AppCompatActivity {
         dbDataSourceObj = new DBDataSource(this);
         dbDataSourceObj.open();
 //        insertData();
-//        readAllData();
-        readDataFiltered();
+        readAllData();
+//        readDataFiltered();
+        if(dbDataSourceObj.remove(3)) Log.d(Logtag,"Row Was Removed");
+        readAllData();
 
 
     }
