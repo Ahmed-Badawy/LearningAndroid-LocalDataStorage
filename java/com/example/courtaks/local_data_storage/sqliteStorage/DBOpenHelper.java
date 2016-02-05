@@ -12,7 +12,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     private static final String LOGTAG = "sqlite";
     private static final String DB_NAME = "persons.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public static final String TABLE_NAME  = "persons_table";
     public static final String COL1 = "id";
@@ -21,14 +21,18 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String COL4 = "photo";
     public static final String COL5 = "person_info";
 
-    private static final String TABLE_CREATE =
-            "CREATE TABLE " + TABLE_NAME + " (" +
-                    COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COL2 + " TEXT, " +
-                    COL3 + " NUMERIC, " +
-                    COL4 + " NUMERIC, " +
-                    COL5 + " TEXT " +
-                    ")";
+    public static final String TABLE2_NAME  = "favorite_person_table";
+    public static final String Table2_COL1 = "favorite_person_id";
+
+
+//    private static final String TABLE_CREATE =
+//            "CREATE TABLE " + TABLE_NAME + " (" +
+//                    COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//                    COL2 + " TEXT, " +
+//                    COL3 + " NUMERIC, " +
+//                    COL4 + " NUMERIC, " +
+//                    COL5 + " TEXT " +
+//                    ")";
 
     public static final String[] COLS_STRING_ARRAY = {
             COL1,COL2,COL3,COL4,COL5
@@ -49,7 +53,18 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(TABLE_CREATE); //create the table
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
+                        COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COL2 + " TEXT, " +
+                        COL3 + " NUMERIC, " +
+                        COL4 + " NUMERIC, " +
+                        COL5 + " TEXT " +
+                        ")"
+        ); //create the table
+
+        db.execSQL("CREATE TABLE "+TABLE2_NAME+" ("+Table2_COL1 + " INTEGER PRIMARY KEY )"); //create the second table
+
+        //create the table
         Log.d(LOGTAG,"table has been created");
     }
 
@@ -57,6 +72,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE2_NAME);
         onCreate(db); //create it again
     }
 

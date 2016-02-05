@@ -38,12 +38,14 @@ public class sqliteStorageActivity extends AppCompatActivity {
 
         dbDataSourceObj = new DBDataSource(this);
         dbDataSourceObj.open();
-//        insertData();
-        readAllData();
+        insertData();
+//        readAllData();
 //        readDataFiltered();
-        if(dbDataSourceObj.remove(3)) Log.d(Logtag,"Row Was Removed");
+//        if(dbDataSourceObj.remove(3)) Log.d(Logtag,"Row Was Removed");
         readAllData();
 
+        if(dbDataSourceObj.addToFavoritePerson(persons_list.get(1))) Log.d(Logtag,"Favorite Person Was Added");
+        dbDataSourceObj.FindAllFavoritePersons();
 
     }
 

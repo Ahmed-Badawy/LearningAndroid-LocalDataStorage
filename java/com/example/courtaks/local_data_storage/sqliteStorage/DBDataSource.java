@@ -57,46 +57,68 @@ public class DBDataSource {
     }
 
 
+
+
     public ArrayList<person_model> Find(){
 //        Cursor cursor = database.query(String table_name,String[] wanted_cols_names,selection,selectionArgs,groupBy,having,orderby);
         Cursor cursor = database.query(DBOpenHelper.TABLE_NAME, DBOpenHelper.COLS_STRING_ARRAY, null, null, null, null, null);
-        Log.d(Logtag,"Retured "+cursor.getCount()+" Rows");
-        if(cursor.getCount()>0){
-            persons_list = new ArrayList<>();
-            populate_person_list(cursor);
-        }
+        Log.d(Logtag, "Retured " + cursor.getCount() + " Rows");
+        persons_list = populate_person_list(cursor);
         return persons_list;
     }
 
     public ArrayList<person_model> Find(String Selection, String orderBy){ //method overloading
 //        Cursor cursor = database.query(String table_name,String[] wanted_cols_names,selection,selectionArgs,groupBy,having,orderby);
-        Cursor cursor = database.query(DBOpenHelper.TABLE_NAME,DBOpenHelper.COLS_STRING_ARRAY,Selection,null,null,null,orderBy);
+        Cursor cursor = database.query(DBOpenHelper.TABLE_NAME, DBOpenHelper.COLS_STRING_ARRAY, Selection, null, null, null, orderBy);
         Log.d(Logtag,"Retured "+cursor.getCount()+" Rows");
-        if(cursor.getCount()>0){
-            populate_person_list(cursor);
-        }
+        persons_list = populate_person_list(cursor);
         return persons_list;
     }
 
     public boolean remove(long id){
         String where_str = DBOpenHelper.COL1+" = "+id;
-        int result = database.delete(DBOpenHelper.TABLE_NAME,where_str,null);//return 1 on success
+        int result = database.delete(DBOpenHelper.TABLE_NAME, where_str, null);//return 1 on success
         return (result == 1);
     }
 
 
     private ArrayList<person_model> populate_person_list( Cursor cursor) {
-        while(cursor.moveToNext()){
-            person_model person = new person_model();
-            person.Id = cursor.getLong(cursor.getColumnIndex(DBOpenHelper.COL1));
-            person.Name = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COL2));
-            person.Age = cursor.getInt(cursor.getColumnIndex(DBOpenHelper.COL3));
-            person.Photo = cursor.getInt(cursor.getColumnIndex(DBOpenHelper.COL4));
-            person.person_info = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COL5));
-            persons_list.add(person);
+        persons_list = new ArrayList<>();
+        if(cursor.getCount()>0) {
+            while (cursor.moveToNext()) {
+                person_model person = new person_model();
+                person.Id = cursor.getLong(cursor.getColumnIndex(DBOpenHelper.COL1));
+                person.Name = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COL2));
+                person.Age = cursor.getInt(cursor.getColumnIndex(DBOpenHelper.COL3));
+                person.Photo = cursor.getInt(cursor.getColumnIndex(DBOpenHelper.COL4));
+                person.person_info = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COL5));
+                persons_list.add(person);
+            }
         }
         return persons_list;
     }
+
+
+
+
+    public boolean addToFavoritePerson(person_model person){
+        ContentValues values = new ContentValues();
+        values.put(DBOpenHelper.Table2_COL1,person.Id);
+        Log.d(Logtag,values.toString());
+        long result = database.insert(DBOpenHelper.TABLE2_NAME, null, values);
+        return (result != -1); //it only return -1 if fail
+    }
+
+    public ArrayList<person_model> FindAllFavoritePersons(){
+        String query = "SELECT * FROM favorite_person_table JOIN persons_table ON persons_table.id == favorite_person_table.favorite_person_id";
+        Cursor cursor = database.rawQuery(query, null);
+        persons_list = populate_person_list(cursor);
+        Log.d(Logtag,"All Favorite Persons : "+persons_list.toString());
+        return persons_list;
+    }
+
+
+
 
 
 
